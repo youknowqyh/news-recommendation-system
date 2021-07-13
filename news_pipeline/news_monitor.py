@@ -26,7 +26,11 @@ redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT)
 cloudAMQPClient = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)
 
 while True:
-    news_list = news_api_client.getNewsFromSource(NEWS_SOURCES)
+    try:
+        news_list = news_api_client.getNewsFromSource(NEWS_SOURCES)
+    except Exception as e:
+        print(e)
+        pass
     
     num_of_new_news = 0
 
