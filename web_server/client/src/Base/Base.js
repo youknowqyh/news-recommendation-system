@@ -10,8 +10,8 @@ const Base = function ({ children, history }) {
         <div>
             <nav className="nav-bar  light-blue darken-4">
                 <div className="nav-wrapper">
-                    {/* <a href="/" className="brand-logo">&nbsp;&nbsp;News Feed</a> */}
-                    <Link to="/" className="brand-logo">&nbsp;&nbsp;News Feed</Link>
+                    <a href="/" className="brand-logo">&nbsp;&nbsp;News Feed</a>
+                    {/* <Link to="/" className="brand-logo">&nbsp;&nbsp;News Feed</Link> */}
 
                     <ul id="nav-mobile" className="right">
                         {Auth.isUserAuthenticated() ?

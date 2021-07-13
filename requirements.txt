@@ -1,0 +1,5 @@
+flask
+flask-jsonrpc
+pymongo
+pika
+requests

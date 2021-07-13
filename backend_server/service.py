@@ -1,35 +1,57 @@
-import pyjsonrpc
-import json
 import os
 import sys
-
+import json
 
 from bson.json_util import dumps
-sys.path.append(os.path.join(os.path.dirname(__file__), './', 'utils'))
+from flask import Flask
+from flask_jsonrpc import JSONRPC
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../', 'common'))
 import mongodb_client
+
+
+app = Flask(__name__)
+jsonrpc = JSONRPC(app, '/api', enable_web_browsable_api=True)
 
 SERVER_HOST = 'localhost'
 SERVER_PORT = 4040
 
-class RequestHandler(pyjsonrpc.HttpRequestHandler):
+@jsonrpc.method('index')
+def index() -> str:
+	return 'Welcome to Flask JSON-RPC'
+@jsonrpc.method('add')
+def add(a: int, b: int) -> int:
     """ Test method """
-    @pyjsonrpc.rpcmethod
-    def add(self, a, b):
-        print("add is called with %d and %d" % (a, b))
-        return a + b
+    print("add is called with %d and %d" % (a, b))
+    return a + b
+@jsonrpc.method('getNews')
+def getNews() -> list:
+    db = mongodb_client.get_db()
+    news = list(db['news'].find())
+    return json.loads(dumps(news))
 
-    @pyjsonrpc.rpcmethod
-    def getNews(self):
-        db = mongodb_client.get_db()
-        news = list(db['news'].find())
-        return json.loads(dumps(news))
+if __name__ == '__main__':
+    app.run(host=SERVER_HOST, port=SERVER_PORT, debug=True)
 
-http_server = pyjsonrpc.ThreadingHttpServer(
-    server_address = (SERVER_HOST, SERVER_PORT),
-    RequestHandlerClass = RequestHandler
-)
 
-print("Starting HTTP server on %s:%d" % (SERVER_HOST, SERVER_PORT))
+# class RequestHandler(pyjsonrpc.HttpRequestHandler):
+#     """ Test method """
+#     @pyjsonrpc.rpcmethod
+#     def add(self, a, b):
+#         print("add is called with %d and %d" % (a, b))
+#         return a + b
 
-http_server.serve_forever()
+#     @pyjsonrpc.rpcmethod
+#     def getNews(self):
+#         db = mongodb_client.get_db()
+#         news = list(db['news'].find())
+#         return json.loads(dumps(news))
+
+# http_server = pyjsonrpc.ThreadingHttpServer(
+#     server_address = (SERVER_HOST, SERVER_PORT),
+#     RequestHandlerClass = RequestHandler
+# )
+
+# print("Starting HTTP server on %s:%d" % (SERVER_HOST, SERVER_PORT))
+
+# http_server.serve_forever()
