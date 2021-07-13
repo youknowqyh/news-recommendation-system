@@ -15,8 +15,9 @@ def getNewsFromSource(sources=DEFAULT_SOURCES, pageSize=100):
     articles = []
     for source in sources:
         payload = {'apiKey' : NEWS_API_KEY,
-                   'sources' : sources,
+                   'sources' : source,
                    'pageSize' : pageSize}
+        print(buildUrl())
         response = requests.get(buildUrl(), params=payload)
         res_json = loads(response.content)
         # Extract info from response
