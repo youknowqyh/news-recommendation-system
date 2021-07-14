@@ -83,7 +83,7 @@ class NewsPanel extends React.Component {
                 )
             }
         } else {
-            this.props.history.push("/login")
+            this.props.history.replace("/login")
 
             return(
                 <div className='container'>
