@@ -11,24 +11,24 @@ from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 import mongodb_client
 
-# from cloudAMQP_client import CloudAMQPClient
+from cloudAMQP_client import CloudAMQPClient
 # import news_recommendation_service_client
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
 NEWS_TABLE_NAME = 'news'
-# CLICK_LOGS_TABLE_NAME = 'click_logs'
+CLICK_LOGS_TABLE_NAME = 'click_logs'
 
 NEWS_LIMIT = 100
 NEWS_LIST_BATCH_SIZE = 10
 USER_NEWS_TIMEOUT_IN_SECONDS = 600
 
-# LOG_CLICK_TASK_QUEUE_HOST = 'localhost'
-# LOG_CLICK_TASK_QUEUE_NAME = "log-click-task-queue"
+LOG_CLICK_TASK_QUEUE_URL = 'amqps://ogzzjmml:qF4TXBuVoTFdlj9uAmlxEhQDb6Dh21-v@snake.rmq2.cloudamqp.com/ogzzjmml'
+LOG_CLICK_TASK_QUEUE_NAME = "log-click-task-queue"
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT, db=0)
-# click_queue_client = RabbitMQClient(LOG_CLICK_TASK_QUEUE_HOST, LOG_CLICK_TASK_QUEUE_NAME)
+click_queue_client = CloudAMQPClient(LOG_CLICK_TASK_QUEUE_URL, LOG_CLICK_TASK_QUEUE_NAME)
 
 
 def getNewsSummariesForUser(user_id, page_num):
@@ -73,3 +73,17 @@ def getNewsSummariesForUser(user_id, page_num):
     #     if news['publishedAt'].date() == datetime.today().date():
     #         news['time'] = 'today'
     return json.loads(dumps(sliced_news))
+
+
+def logNewsClickForUser(user_id, news_id):
+    print("click")
+    message = {'userId': user_id, 'newsId': news_id, 'timestamp': datetime.utcnow()}
+
+    # Back up the log message to mongodb
+    db = mongodb_client.get_db()
+    db[CLICK_LOGS_TABLE_NAME].insert(message)
+
+    # Send log task to machine learing service
+    message = {'userId': user_id, 'newsId': news_id,
+               'timestamp': str(datetime.utcnow())}
+    click_queue_client.sendMessage(message)

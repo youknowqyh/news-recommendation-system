@@ -4,15 +4,15 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 
-# import mongodb_client
-# from rabbitMQ_client import RabbitMQClient
+import mongodb_client
+from cloudAMQP_client import CloudAMQPClient
 
-# CLICK_LOGS_TABLE_NAME = 'click_logs'
-# LOG_CLICK_TASK_QUEUE_HOST = 'localhost'
-# LOG_CLICK_TASK_QUEUE_NAME = "log-click-task-queue"
+CLICK_LOGS_TABLE_NAME = 'click_logs'
+LOG_CLICK_TASK_QUEUE_URL = 'amqps://ogzzjmml:qF4TXBuVoTFdlj9uAmlxEhQDb6Dh21-v@snake.rmq2.cloudamqp.com/ogzzjmml'
+LOG_CLICK_TASK_QUEUE_NAME = "log-click-task-queue"
 
-# click_queue_client = RabbitMQClient(
-#     LOG_CLICK_TASK_QUEUE_HOST, LOG_CLICK_TASK_QUEUE_NAME)
+click_queue_client = CloudAMQPClient(LOG_CLICK_TASK_QUEUE_URL, LOG_CLICK_TASK_QUEUE_NAME)
+
 
 def test_getNewsSummariesForUser_basic():
     news = operations.getNewsSummariesForUser('test', 1)
@@ -36,27 +36,27 @@ def test_getNewsSummariesForUser_pagination():
     print("pagination test passed!")
 
 
-# def test_logNewsClickForUser_basic():
-#     db = mongodb_client.get_db()
+def test_logNewsClickForUser_basic():
+    db = mongodb_client.get_db()
     
-#     db[CLICK_LOGS_TABLE_NAME].delete_many({"userId": "test"})
+    db[CLICK_LOGS_TABLE_NAME].delete_many({"userId": "test"})
 
-#     operations.logNewsClickForUser('test', 'test_news')
-#     record = list(db[CLICK_LOGS_TABLE_NAME].find().sort([('timestamp', -1)]).limit(1))[0]
+    operations.logNewsClickForUser('test', 'test_news')
+    record = list(db[CLICK_LOGS_TABLE_NAME].find().sort([('timestamp', -1)]).limit(1))[0]
 
-#     assert record is not None
-#     assert record['userId'] == 'test'
-#     assert record['newsId'] == 'test_news'
-#     assert record['timestamp'] is not None
+    assert record is not None
+    assert record['userId'] == 'test'
+    assert record['newsId'] == 'test_news'
+    assert record['timestamp'] is not None
 
-#     db[CLICK_LOGS_TABLE_NAME].delete_many({'userId': 'test'})
+    db[CLICK_LOGS_TABLE_NAME].delete_many({'userId': 'test'})
 
-#     msg = click_queue_client.getMessage()
-#     assert msg is not None
+    msg = click_queue_client.getMessage()
+    assert msg is not None
 
-#     print("test_logNewsClickForUser_basic passed!")
+    print("test_logNewsClickForUser_basic passed!")
 
 if __name__ == "__main__":
-    test_getNewsSummariesForUser_basic()
-    test_getNewsSummariesForUser_pagination()
-    # test_logNewsClickForUser_basic()
+    # test_getNewsSummariesForUser_basic()
+    # test_getNewsSummariesForUser_pagination()
+    test_logNewsClickForUser_basic()

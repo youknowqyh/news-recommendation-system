@@ -34,6 +34,11 @@ def getNews() -> list:
 def getNewsSummariesForUser(user_id: str, page_num: str) -> list:
     """Get news summary from mongodb"""
     return operations.getNewsSummariesForUser(user_id, page_num)
+@jsonrpc.method('logNewsClickForUser')
+def logNewsClickForUser(user_id:str, news_id:str) -> None:
+    """Log user news clicks"""
+    print(user_id)
+    return operations.logNewsClickForUser(user_id, news_id)
 if __name__ == '__main__':
     app.run(host=SERVER_HOST, port=SERVER_PORT, debug=True)
 
