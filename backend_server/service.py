@@ -9,6 +9,7 @@ from flask_jsonrpc import JSONRPC
 sys.path.append(os.path.join(os.path.dirname(__file__), '../', 'common'))
 import mongodb_client
 
+import operations
 
 app = Flask(__name__)
 jsonrpc = JSONRPC(app, '/api', enable_web_browsable_api=True)
@@ -29,7 +30,10 @@ def getNews() -> list:
     db = mongodb_client.get_db()
     news = list(db['news'].find())
     return json.loads(dumps(news))
-
+@jsonrpc.method('getNewsSummariesForUser')
+def getNewsSummariesForUser(user_id: str, page_num: str) -> list:
+    """Get news summary from mongodb"""
+    return operations.getNewsSummariesForUser(user_id, page_num)
 if __name__ == '__main__':
     app.run(host=SERVER_HOST, port=SERVER_PORT, debug=True)
 
