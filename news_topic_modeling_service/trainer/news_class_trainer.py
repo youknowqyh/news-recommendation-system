@@ -18,7 +18,7 @@ VOCAB_PROCESSOR_SAVE_FILE = '../model/vocab_processor_save_file'
 MAX_DOCUMENT_LENGTH = 300
 N_CLASSES = 17
 
-STEPS = 1000
+STEPS = 800
 
 def main(unused_argv):
     if REMOVE_PREVIOUS_MODEL:

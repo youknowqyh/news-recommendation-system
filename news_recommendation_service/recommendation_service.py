@@ -22,7 +22,7 @@ jsonrpc = JSONRPC(app, '/api', enable_web_browsable_api=True)
 
 
 @jsonrpc.method('getPreferenceForUser')
-def getPreferenceForUser(user_id):
+def getPreferenceForUser(user_id:str)->list:
     db = mongodb_client.get_db()
     model = db[PREFERENCE_MODEL_TABLE_NAME].find_one({'userId':user_id})
     print(model)
