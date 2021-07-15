@@ -11,15 +11,15 @@ This is a real-time news scraping and recommendation system implemented as a sin
 
 ## Demo
 
-![](E:\Side Projects\news-recommend-system\repo\img\demo.png)
+![](img/demo.png)
 
 ## Architecture
 
-![](E:\Side Projects\news-recommend-system\repo\img\system-architecture.png)
+![](img/system-architecture.png)
 
 
 
-![](E:\Side Projects\news-recommend-system\repo\img\lifecycle.png)
+![](img/lifecycle.png)
 
 ## System Break-down
 
@@ -27,7 +27,7 @@ This is a real-time news scraping and recommendation system implemented as a sin
 
 News pipeline is composed by news monitor, web scraper and news deduper, news is sent and received between them by RabbitMQ which decouples these components. The news monitor use News API to derive latest news and store news title MD5 digest into Redis to avoid sending same news to the message queue. The web scraper use a third party package Newspaper to fetch corresponding news articles from offical news website. News depuper implements TF-IDF to calculate similarity of news to avoid storing same news from different news source into MongoDB. For similar news, only store the one published firstly.
 
-![](E:\Side Projects\news-recommend-system\repo\img\newspipeline.jpeg)
+![](img/newspipeline.jpeg)
 
 ### News Recommendation service
 
@@ -35,7 +35,7 @@ I built a click log processor to implement a time decay model. If a news topic i
 
 When some news' topic with the most probability for that user, the webpage will show a "Recommend" tag to the user.
 
-![](E:\Side Projects\news-recommend-system\repo\img\recommendation.jpeg)
+![](img/recommendation.jpeg)
 
 ### News Classification Service
 
